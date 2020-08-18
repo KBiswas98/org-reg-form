@@ -95,7 +95,7 @@ export default function index() {
     const checkNonEmpty = (str) => {
       console.log('>>>>>>>>');
       console.log(str);
-      return str.length > 1;
+      return str.length > 0;
     };
 
     const checkPhoneNo = (str) => {
