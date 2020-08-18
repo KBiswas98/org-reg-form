@@ -1,65 +1,370 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React, { useReducer, useState } from 'react';
+import TopBar from '../components/organisams/TopBar';
+import { useRouter } from 'next/router';
+import {
+  TextInputes,
+  OptionSelect,
+  DropDown,
+  DropDownWithImage,
+  PhoneNoInput,
+  OtpInput,
+} from '../components/molecules/Inputes';
+import { ButtonMain } from '../components/atom/Button';
+import Toast from '../components/molecules/Toast';
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+const data = {
+  navbar: ['0,-1,-1', '1,0,-1', '1,1,0'],
+  meta: [
+    {
+      headline: 'Add your personal details',
+      paragraph:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+    },
+    {
+      headline: 'Add your company details',
+      paragraph:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+    },
+    {
+      headline: 'Enter your OTP',
+      paragraph:
+        'For your security, we need to verify your identity. we sent a 5-digit code to name@domain.com. Please enter it bellow',
+    },
+  ],
+  country: [
+    { name: 'Australia', image: 'https://www.countryflags.io/AU/flat/32.png' },
+    { name: 'India', image: 'https://www.countryflags.io/IN/flat/32.png' },
+    { name: 'Canada', image: 'https://www.countryflags.io/CA/flat/32.png' },
+  ],
+  state: ['Delhi', 'Tamil Nadu', 'West Bengal'],
+};
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+export default function index() {
+  const router = useRouter();
+  const [position, setPosition] = useState(0);
+  const [values, setValues] = useState({
+    name: '',
+    gender: '',
+    country: 'India',
+    state: 'Tamil Nadu',
+    phone: '',
+    companyName: '',
+    email: '',
+    jobTitle: '',
+    yearsOfExp: '',
+    otp: '',
+  });
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+  const [myTost, setTost] = useState({
+    message: 'something',
+    type: 'error',
+    show: false,
+  });
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+  const [tougleSelect, setTougle] = useState(false);
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+  const submit = () => {
+    console.log(values);
+    localStorage.setItem('data', JSON.stringify(values));
+    router.push('/welcome');
+  };
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+  const next = () => {
+    console.log(position);
+    console.log(values);
+    console.log(validation());
+    position < data.navbar.length - 1 && validation()
+      ? setPosition(position + 1)
+      : console.log('welcome');
+  };
 
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+  const renderBody = () => {
+    switch (position) {
+      case 0:
+        return personalDetailsRender();
+      case 1:
+        return companyDetailsRender();
+      case 2:
+        return otpRender();
+      default:
+        return console.log('Go to Welcome page.');
+    }
+  };
+
+  const validation = () => {
+    const checkNonEmpty = (str) => {
+      console.log('>>>>>>>>');
+      console.log(str);
+      return str.length > 1;
+    };
+
+    const checkPhoneNo = (str) => {
+      return str.length === 10;
+    };
+
+    function validateEmail(email) {
+      const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(String(email).toLowerCase());
+    }
+
+    const showError = (msg) => {
+      setTost({
+        ...myTost,
+        message: msg,
+        type: 'error',
+        show: true,
+      });
+      return false;
+    };
+
+    const stepOneValidation = () => {
+      if (
+        !Object.keys(values)
+          .slice(0, 5)
+          .every((item) =>
+            checkNonEmpty(values[item])
+              ? true
+              : showError(`${item} can't be empty.`) === true
+          )
+      ) {
+        return false;
+      }
+
+      if (!checkPhoneNo(values['phone'])) {
+        showError('Phone number should be 10 digit.');
+        return false;
+      }
+
+      return true;
+    };
+
+    const stepTwoValidation = () => {
+      if (
+        !Object.keys(values)
+          .slice(5, 9)
+          .every((item) =>
+            checkNonEmpty(values[item])
+              ? true
+              : showError(`${item} can't be empty.`) === true
+          )
+      ) {
+        return false;
+      }
+
+      if (!validateEmail(values['email'])) {
+        showError('Please type a valid email.');
+        return false;
+      }
+
+      if (!tougleSelect) {
+        showError('Please check Trams and Condition');
+        return false;
+      }
+
+      return true;
+    };
+
+    switch (position) {
+      case 0:
+        return stepOneValidation();
+        break;
+      case 1:
+        return stepTwoValidation();
+        break;
+    }
+  };
+
+  const personalDetailsRender = () => (
+    <>
+      <div className="box">
+        <TextInputes
+          title={'Full Name'}
+          value={values.name}
+          onChange={(e) => setValues({ ...values, name: e.target.value })}
+        />
+        <OptionSelect
+          value={values.gender}
+          options={['Male', 'Female', 'Other']}
+          onSelect={(e) => setValues({ ...values, gender: e })}
+          title="Gender"
+        />
+        <DropDownWithImage
+          value={values.country}
+          options={data.country}
+          onChange={(e) => setValues({ ...values, country: e })}
+          title="Country"
+        />
+        <DropDown
+          title="state"
+          value={values.state}
+          onChange={(e) => setValues({ ...values, state: e })}
+          options={data.state}
+        />
+        <PhoneNoInput
+          placeholder="Your mobile number"
+          title="Phone"
+          value={values.phone}
+          onChange={(e) => setValues({ ...values, phone: e })}
+        />
+        <ButtonMain onClick={() => next()} name="next" />
+      </div>
+      <div className="row">
+        <p style={{ fontWeight: '300' }}>Already have an account? </p>
+        <p style={{ color: '#ED5A35' }}> Log in</p>
+      </div>
+    </>
+  );
+
+  const companyDetailsRender = () => (
+    <>
+      <div className="box">
+        <div className="row" style={{ marginTop: 25, marginBottom: 10 }}>
+          <img
+            src={require('../assets/png/placeholder.png')}
+            style={{
+              borderRadius: 80,
+              height: 80,
+              width: 80,
+              opacity: 0.4,
+              marginRight: 15,
+            }}
+          />
+          <p className="bold-red "> Upload your company logo</p>
         </div>
-      </main>
+        <TextInputes
+          placeholder="Company Name"
+          title={'Company name'}
+          value={values.companyName}
+          onChange={(e) =>
+            setValues({ ...values, companyName: e.target.value })
+          }
+        />
+        <TextInputes
+          placeholder="Email id"
+          title={'email'}
+          value={values.email}
+          onChange={(e) => setValues({ ...values, email: e.target.value })}
+        />
+        <TextInputes
+          placeholder="Job Title"
+          title={'Job title'}
+          value={values.jobTitle}
+          onChange={(e) => setValues({ ...values, jobTitle: e.target.value })}
+        />
+        <TextInputes
+          type="number"
+          placeholder="Years of Exprience"
+          title={'Years of Exprience'}
+          value={values.yearsOfExp}
+          onChange={(e) => setValues({ ...values, yearsOfExp: e.target.value })}
+        />
+        <div className="row">
+          <div className="check-box" onClick={() => setTougle(!tougleSelect)}>
+            {tougleSelect && (
+              <img
+                src="https://img.icons8.com/ios-glyphs/30/000000/checkmark.png"
+                style={{ height: 18, width: 18 }}
+              />
+            )}
+          </div>
+          <div className="row">
+            <p className="lite-text">I accept the </p>
+            <p className="bold-red">Trams and Conditions</p>
+          </div>
+        </div>
+        <div className="row" style={{ width: '100%', flex: 1 }}>
+          <div
+            onClick={() => setPosition(position - 1)}
+            className="button-raw"
+            style={{ backgroundColor: '#E7E7E7' }}
+          >
+            Back
+          </div>
+          <ButtonMain
+            disable={false}
+            onClick={() => next()}
+            name="Send OTP"
+            style={{ flex: 1 }}
+          />
+        </div>
+      </div>
+    </>
+  );
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+  const otpRender = () => {
+    console.log(values);
+    return (
+      <>
+        <div className="box">
+          <OtpInput
+            onChange={(e) => setValues({ ...values, otp: e })}
+            title="Enter your code"
+          />
+          <div className="row" style={{ width: '100%', flex: 1 }}>
+            <div
+              onClick={() => setPosition(position - 1)}
+              className="button-raw"
+              style={{ backgroundColor: '#E7E7E7' }}
+            >
+              Back
+            </div>
+            <ButtonMain
+              disable={values.otp.length < 4}
+              onClick={() => submit()}
+              name="Verify"
+              style={{ flex: 1 }}
+            />
+          </div>
+          <hr style={{ opacity: 0.3 }} />
+          <div
+            className="row"
+            style={{
+              textAlign: 'center',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <p
+              style={{
+                fontWeight: '300',
+                marginBottom: 0,
+                textAlign: 'center',
+                maxWidth: 450,
+              }}
+            >
+              Didn't recive them email? Check your spam filter for an email from
+              <p style={{ color: '#ED5A35', margin: 0, textAlign: 'center' }}>
+                name@domain.com
+              </p>
+            </p>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  return (
+    <div className="body">
+      <>
+        <TopBar seq={data.navbar[position]} />
+        <div className="center-container">
+          <div>
+            <h1>{data.meta[position].headline}</h1>
+            <p style={{ opacity: 0.9, fontWeight: '400', maxWidth: 450 }}>
+              {data.meta[position].paragraph}
+            </p>
+          </div>
+          {renderBody()}
+        </div>
+        {myTost.show && (
+          <Toast
+            type={myTost.type}
+            message={myTost.message}
+            onChange={() => setTost({ ...myTost, show: !myTost.show })}
+          />
+        )}
+      </>
     </div>
-  )
+  );
 }

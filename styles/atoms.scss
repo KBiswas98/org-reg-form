@@ -1,0 +1,165 @@
+@import './constant.scss';
+@import './responsive.scss';
+
+.topbar {
+  font-weight: 400;
+  height: auto;
+  width: 100%;
+  background-color: $secondary_color;
+}
+
+.step {
+  font-weight: 300;
+  color: #fff;
+}
+
+.text-input {
+  height: 35px;
+  font-size: 14px;
+  padding: 0px 15px;
+  letter-spacing: 0.04em;
+  border: 1.6px solid rgba(221, 221, 221, 0.589);
+  border-radius: 4px;
+  min-width: 300px;
+  width: 500px;
+
+  @include phone {
+    max-width: 300px;
+  }
+}
+
+.button-raw {
+  border: 1px solid rgb(231, 231, 231);
+  border-radius: 4px;
+  padding: 7px 20px;
+  margin-right: 15px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.button-raw-select {
+  border: 1px solid $primary_shadow;
+  background-color: $primary_shadow;
+  color: $primary_color;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.option-select {
+  //   background-color: pink;
+  width: 100%;
+  padding-right: 15px;
+  @include phone {
+    min-width: 100%;
+  }
+}
+
+.phone-Input {
+  //   padding-left: 100px;
+  height: 35px;
+  font-size: 14px;
+  padding: 0px 15px;
+  padding-left: 100px;
+  letter-spacing: 0.04em;
+  border: 1.6px solid rgba(221, 221, 221, 0.589);
+  border-radius: 4px;
+  min-width: 300px;
+  width: 78%;
+
+  @include phone {
+    padding-left: 10px;
+  }
+}
+
+.button-main {
+  &:hover {
+    cursor: pointer;
+  }
+  background-color: $primary_color;
+  margin: 25px 0px;
+  height: 40px;
+  border-radius: 3px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  text-transform: capitalize;
+  color: #fff;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+.drd {
+  background-image: url('https://img.icons8.com/ios-glyphs/18/000000/expand-arrow.png');
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.check-box {
+  height: 20px;
+  width: 20px;
+  border: 2px solid rgb(228, 228, 228);
+  border-radius: 4px;
+  margin: 0px;
+  margin-right: 10px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.otp-box {
+  height: 45px;
+  width: 45px;
+  margin: 7px;
+  border: 1.6px solid rgba(221, 221, 221, 0.589);
+  border-radius: 4px;
+  font-size: 20px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  color: transparent;
+  text-shadow: 0 0 0 #0e0e0e;
+  text-align: center;
+  &:focus {
+    outline: none;
+  }
+}
+
+.error {
+  background-color: red;
+}
+
+.success {
+  background-color: rgb(0, 151, 0);
+}
+
+.toast {
+  position: absolute;
+  padding: 10px 20px;
+  top: -50px;
+  right: 30px;
+  border-radius: 4px;
+  color: #fff;
+}
+
+.move-down {
+  transition-duration: 2000ms;
+  transform: translateY(160px);
+}
+
+.move-back {
+  transition-delay: 2000ms;
+  transition-duration: 2000ms;
+  transform: translateY(-160px);
+}
+
+.vanish {
+  transition-duration: 2000ms;
+  opacity: 0;
+}
