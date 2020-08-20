@@ -69,12 +69,12 @@ export default function index() {
   useEffect(() => {
     const getIp = async () => {
       await publicIp.v4().then((res) => {
-        fetch(`http://ip-api.com/json/${res}`).then((result) => {
+        fetch(`https://ipapi.co/${res}/json`).then((result) => {
           result.json().then((av) =>
             setValues({
               ...values,
-              country: av.country,
-              state: av.regionName,
+              country: av.country_name,
+              state: av.region,
             })
           );
         });
