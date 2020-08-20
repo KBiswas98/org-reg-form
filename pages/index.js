@@ -12,6 +12,7 @@ import {
 import { ButtonMain } from '../components/atom/Button';
 import Toast from '../components/molecules/Toast';
 import publicIp from 'public-ip';
+import { getCountries, getStates } from 'country-state-picker';
 
 const data = {
   navbar: ['0,-1,-1', '1,0,-1', '1,1,0'],
@@ -67,6 +68,7 @@ export default function index() {
   const [tougleSelect, setTougle] = useState(false);
 
   useEffect(() => {
+    console.log(getStates('india'));
     const getIp = async () => {
       await publicIp.v4().then((res) => {
         fetch(`https://ipapi.co/${res}/json`).then((result) => {
@@ -213,7 +215,7 @@ export default function index() {
         />
         <DropDownWithImage
           value={values.country}
-          options={data.country}
+          options={getCountries()}
           onChange={(e) => setValues({ ...values, country: e })}
           title="Country"
         />
@@ -221,7 +223,13 @@ export default function index() {
           title="state"
           value={values.state}
           onChange={(e) => setValues({ ...values, state: e })}
-          options={data.state}
+          options={
+            values.country === ''
+              ? []
+              : getStates(
+                  getCountries().find((itm) => itm.name === values.country).code
+                )
+          }
         />
         <PhoneNoInput
           placeholder="Your mobile number"

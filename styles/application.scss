@@ -73,12 +73,13 @@
 }
 
 .circle-image-crop {
-  width: 25px;
-  height: 25px;
+  width: 23px;
+  height: 23px;
   position: relative;
   overflow: hidden;
   border-radius: 100%;
   margin-right: 10px;
+  object-fit: cover;
 }
 
 .circle-image {
