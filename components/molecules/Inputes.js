@@ -12,7 +12,7 @@ function TextInputes({
   const [renderColor, setRenderColor] = useState(false);
 
   useEffect(() => {
-    console.log('use Effect');
+    //console.log('use Effect');
     document.addEventListener('mousedown', handelClick, false);
     return () => {
       document.removeEventListener('mousedown', handelClick, false);
@@ -23,7 +23,7 @@ function TextInputes({
     if (myRef.current.contains(e.target)) {
       return;
     }
-    console.log(e, myRef);
+    //console.log(e, myRef);
     document.removeEventListener('mousedown', handelClick, false);
     setRenderColor(false);
   };
@@ -105,7 +105,7 @@ function DropDown({
   const [renderColor, setRenderColor] = useState(false);
 
   useEffect(() => {
-    console.log('use Effect');
+    //console.log('use Effect');
     document.addEventListener('mousedown', handelClick, false);
     return () => {
       document.removeEventListener('mousedown', handelClick, false);
@@ -116,7 +116,7 @@ function DropDown({
     if (myRef.current.contains(e.target)) {
       return;
     }
-    console.log(e, myRef);
+    //console.log(e, myRef);
     document.removeEventListener('mousedown', handelClick, false);
     setRenderColor(false);
   };
@@ -162,26 +162,31 @@ function DropDownWithImage({
   onChange,
   value,
 }) {
+  //console.log('................');
+  //console.log(value.length);
+  //console.log(
+  //   value.length > 0 ? options.findIndex((item) => item.name === value) : 0
+  // );
   const myRef = useRef(null);
   const [renderColor, setRenderColor] = useState(false);
   const [showBody, setShowBody] = useState(false);
-  const [selectedOne, setSelectedOne] = useState(
-    options.findIndex((item) => item.name === value)
-  );
+  const [selectedOne, setSelectedOne] = useState(0);
+  //console.log('select one: ', selectedOne);
 
   useEffect(() => {
-    console.log('use Effect');
+    let _index = options.findIndex((item) => item.name === value);
+    setSelectedOne(_index === -1 ? 0 : _index);
     document.addEventListener('mousedown', handelClick, false);
     return () => {
       document.removeEventListener('mousedown', handelClick, false);
     };
-  }, []);
+  }, [value]);
 
   const handelClick = (e) => {
     if (myRef.current.contains(e.target)) {
       return;
     }
-    console.log(e, myRef);
+    //console.log(e, myRef);
     document.removeEventListener('mousedown', handelClick, false);
     setRenderColor(false);
   };
@@ -259,7 +264,7 @@ function PhoneNoInput({
   const [renderColor, setRenderColor] = useState(false);
 
   useEffect(() => {
-    console.log('use Effect');
+    //console.log('use Effect');
     document.addEventListener('mousedown', handelClick, false);
     return () => {
       document.removeEventListener('mousedown', handelClick, false);
@@ -270,7 +275,7 @@ function PhoneNoInput({
     if (myRef.current.contains(e.target)) {
       return;
     }
-    console.log(e, myRef);
+    //console.log(e, myRef);
     document.removeEventListener('mousedown', handelClick, false);
     setRenderColor(false);
   };
@@ -338,7 +343,7 @@ function OtpInput({ title = 'no title', onChange }) {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    console.log('use Effect');
+    //console.log('use Effect');
     document.addEventListener('mousedown', handelClick, false);
     return () => {
       document.removeEventListener('mousedown', handelClick, false);
@@ -349,7 +354,7 @@ function OtpInput({ title = 'no title', onChange }) {
     if (myRef.current.contains(e.target)) {
       return;
     }
-    console.log(e, myRef);
+    //console.log(e, myRef);
     document.removeEventListener('mousedown', handelClick, false);
     setRenderColor(false);
   };
@@ -361,8 +366,8 @@ function OtpInput({ title = 'no title', onChange }) {
 
   const handleChange = (e, index) => {
     if (isNaN(e.target.value)) return false;
-    console.log(e.target.value);
-    console.log(e, current);
+    //console.log(e.target.value);
+    //console.log(e, current);
     setOtp([...otp.map((d, idx) => (idx === index ? e.target.value : d))]);
     setCurrent(current + 1);
     onChange(otp.join(''));

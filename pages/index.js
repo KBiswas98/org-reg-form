@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TopBar from '../components/organisams/TopBar';
 import { useRouter } from 'next/router';
 import {
@@ -11,6 +11,7 @@ import {
 } from '../components/molecules/Inputes';
 import { ButtonMain } from '../components/atom/Button';
 import Toast from '../components/molecules/Toast';
+import publicIp from 'public-ip';
 
 const data = {
   navbar: ['0,-1,-1', '1,0,-1', '1,1,0'],
@@ -41,17 +42,19 @@ const data = {
 
 export default function index() {
   const router = useRouter();
+  var myRef = useRef();
   const [position, setPosition] = useState(0);
   const [values, setValues] = useState({
     name: '',
     gender: '',
-    country: 'India',
-    state: 'Tamil Nadu',
+    country: '',
+    state: '',
     phone: '',
     companyName: '',
     email: '',
     jobTitle: '',
     yearsOfExp: '',
+    profileImage: '',
     otp: '',
   });
 
@@ -63,19 +66,41 @@ export default function index() {
 
   const [tougleSelect, setTougle] = useState(false);
 
+  useEffect(() => {
+    const getIp = async () => {
+      await publicIp.v4().then((res) => {
+        fetch(`http://ip-api.com/json/${res}`).then((result) => {
+          result.json().then((av) =>
+            setValues({
+              ...values,
+              country: av.country,
+              state: av.regionName,
+            })
+          );
+        });
+      });
+    };
+
+    getIp();
+  }, []);
+
+  const uploadFile = () => {
+    document.getElementById('selectImage').click();
+  };
+
   const submit = () => {
-    console.log(values);
+    //console.log(values);
     localStorage.setItem('data', JSON.stringify(values));
     router.push('/welcome');
   };
 
   const next = () => {
-    console.log(position);
-    console.log(values);
-    console.log(validation());
+    //console.log(position);
+    //console.log(values);
+    //console.log(validation());
     position < data.navbar.length - 1 && validation()
       ? setPosition(position + 1)
-      : console.log('welcome');
+      : null;
   };
 
   const renderBody = () => {
@@ -87,14 +112,14 @@ export default function index() {
       case 2:
         return otpRender();
       default:
-        return console.log('Go to Welcome page.');
+        return; //console.log('Go to Welcome page.');
     }
   };
 
   const validation = () => {
     const checkNonEmpty = (str) => {
-      console.log('>>>>>>>>');
-      console.log(str);
+      //console.log('>>>>>>>>');
+      //console.log(str);
       return str.length > 0;
     };
 
@@ -141,7 +166,7 @@ export default function index() {
     const stepTwoValidation = () => {
       if (
         !Object.keys(values)
-          .slice(5, 9)
+          .slice(5, 10)
           .every((item) =>
             checkNonEmpty(values[item])
               ? true
@@ -167,10 +192,8 @@ export default function index() {
     switch (position) {
       case 0:
         return stepOneValidation();
-        break;
       case 1:
         return stepTwoValidation();
-        break;
     }
   };
 
@@ -220,16 +243,35 @@ export default function index() {
       <div className="box">
         <div className="row" style={{ marginTop: 25, marginBottom: 10 }}>
           <img
-            src={require('../assets/png/placeholder.png')}
+            src={
+              values.profileImage.length > 1
+                ? values.profileImage
+                : require('../assets/png/placeholder.png')
+            }
             style={{
               borderRadius: 80,
               height: 80,
               width: 80,
-              opacity: 0.4,
+              opacity: 1,
               marginRight: 15,
+              objectFit: 'cover',
             }}
           />
-          <p className="bold-red "> Upload your company logo</p>
+          <input
+            type="file"
+            id="selectImage"
+            style={{ display: 'none' }}
+            onChange={(e) =>
+              setValues({
+                ...values,
+                profileImage: URL.createObjectURL(e.target.files[0]),
+              })
+            }
+          />
+          <p className="bold-red " onClick={() => uploadFile()}>
+            {' '}
+            Upload your company logo
+          </p>
         </div>
         <TextInputes
           placeholder="Company Name"
@@ -292,7 +334,7 @@ export default function index() {
   );
 
   const otpRender = () => {
-    console.log(values);
+    //console.log(values);
     return (
       <>
         <div className="box">
